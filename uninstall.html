@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StaySummary — We're sorry to see you go</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0e1117; color: #e6edf3; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .card { max-width: 480px; width: 100%; padding: 40px 32px; background: #161b2a; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); margin: 20px; }
+    .logo { font-size: 32px; margin-bottom: 8px; }
+    h1 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .sub { color: #8892a4; font-size: 14px; margin-bottom: 24px; line-height: 1.5; }
+    .question { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+    .options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+    .option { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: #111520; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; cursor: pointer; transition: border-color 0.15s; }
+    .option:hover { border-color: #FF5A5F; }
+    .option input { accent-color: #FF5A5F; }
+    .option label { cursor: pointer; font-size: 14px; color: #e6edf3; }
+    textarea { width: 100%; padding: 10px 14px; background: #111520; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #e6edf3; font-family: inherit; font-size: 14px; resize: vertical; min-height: 80px; margin-bottom: 20px; }
+    textarea::placeholder { color: #55627a; }
+    textarea:focus { outline: none; border-color: #FF5A5F; }
+    .btn { display: inline-block; padding: 10px 24px; background: #FF5A5F; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .btn:hover { background: #E04E53; }
+    .thanks { display: none; text-align: center; padding: 20px 0; }
+    .thanks h2 { font-size: 18px; margin-bottom: 8px; }
+    .thanks p { color: #8892a4; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div id="survey">
+      <div class="logo">🏠</div>
+      <h1>We're sorry to see you go</h1>
+      <p class="sub">Your feedback helps us improve StaySummary. Would you mind telling us why you uninstalled?</p>
+
+      <div class="question">What made you uninstall?</div>
+      <div class="options">
+        <div class="option"><input type="radio" name="reason" id="r1" value="not-useful"><label for="r1">Summaries weren't useful</label></div>
+        <div class="option"><input type="radio" name="reason" id="r2" value="too-expensive"><label for="r2">Too expensive</label></div>
+        <div class="option"><input type="radio" name="reason" id="r3" value="not-accurate"><label for="r3">Summaries weren't accurate</label></div>
+        <div class="option"><input type="radio" name="reason" id="r4" value="too-slow"><label for="r4">Too slow</label></div>
+        <div class="option"><input type="radio" name="reason" id="r5" value="privacy"><label for="r5">Privacy concerns</label></div>
+        <div class="option"><input type="radio" name="reason" id="r6" value="found-alternative"><label for="r6">Found a better alternative</label></div>
+        <div class="option"><input type="radio" name="reason" id="r7" value="didnt-work"><label for="r7">Didn't work on my site</label></div>
+        <div class="option"><input type="radio" name="reason" id="r8" value="other"><label for="r8">Other</label></div>
+      </div>
+
+      <div class="question">Anything else you'd like to share?</div>
+      <textarea id="feedback" placeholder="What could we do better?"></textarea>
+
+      <button class="btn" id="submit-btn">Submit Feedback</button>
+    </div>
+
+    <div class="thanks" id="thanks">
+      <div class="logo">🙏</div>
+      <h2>Thank you for your feedback</h2>
+      <p>We'll use this to make StaySummary better. You can always reinstall from the Chrome Web Store.</p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('submit-btn').addEventListener('click', () => {
+      const reason = document.querySelector('input[name="reason"]:checked')?.value || 'none';
+      const feedback = document.getElementById('feedback').value.trim();
+
+      // Send to your worker (fire and forget)
+      fetch('https://staysummary-api.bentontheissen.workers.dev/api/uninstall-feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reason, feedback, timestamp: Date.now() })
+      }).catch(() => {});
+
+      document.getElementById('survey').style.display = 'none';
+      document.getElementById('thanks').style.display = 'block';
+    });
+  </script>
+</body>
+</html>
