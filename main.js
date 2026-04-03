@@ -16,10 +16,7 @@
     triggers.forEach(function (el) {
       el.addEventListener('click', function (e) {
         e.preventDefault();
-        alert(
-          'StaySummary is live on the Chrome Web Store!\n\n' +
-          'Get notified at hello@staysummary.io'
-        );
+        window.open('https://chromewebstore.google.com/detail/staysummary/kjoahaflaajjiddcjkbhgceinjigibdf', '_blank');
       });
     });
   }
